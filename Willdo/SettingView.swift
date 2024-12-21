@@ -33,13 +33,12 @@ struct SettingView: View {
                     
                     Toggle("Sync Data", isOn: $sync_data)
                     
-               
                     TextField("Type here", text: $host)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding()
                 }
                 
-                
+              
             }
             
             
