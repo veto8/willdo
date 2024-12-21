@@ -29,13 +29,23 @@ struct SettingView: View {
             
             //https://www.codespeedy.com/read-text-from-a-textfield-in-swiftui/
             Form {
-                Section(header: Text("CouchDB Sync")) {
+                Section(header: Text("Sync Data to a CouchDB Server")) {
                     
                     Toggle("Sync Data", isOn: $sync_data)
                     
-                    TextField("Type here", text: $host)
+                    TextField("Hostnamee", text: $host)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding()
+                                           
+                    TextField("Username", text: $user)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        
+                    
+                    TextField("Password", text: $password)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        
+                    
+                    
+                  
                 }
                 
               
