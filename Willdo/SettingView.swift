@@ -5,7 +5,6 @@
 //  Created by veto on 29/1/2567 BE.
 //
 
-import Setting
 import SwiftUI
 
 
@@ -19,83 +18,43 @@ struct SettingView: View {
     @AppStorage("user") var user = ""
     @AppStorage("password") var password = ""
     @AppStorage("couchdb") var couchdb = false
-    @AppStorage("iscouchdb") var iscouchdb = false
-
+    @AppStorage("sync_data") var sync_data = false
+   // @AppStorage("userInput") var sync_data = ""
     @AppStorage("languageIndex") var languageIndex = 0
     //@State private var username = ""
     //@State private var password = ""
     @AppStorage("index") var index = 0
     var body: some View {
         NavigationView {
-       
             
+            //https://www.codespeedy.com/read-text-from-a-textfield-in-swiftui/
             Form {
-                        Section(header: Text("Notifications")) {
-                  
-                            Toggle("Play notification sounds", isOn: $iscouchdb)
-                        }
+                Section(header: Text("Sync Data to a CouchDB Server")) {
+                    
+                    Toggle("Sync Data", isOn: $sync_data)
+                    
+                    TextField("Hostnamee", text: $host)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                           
+                    TextField("Username", text: $user)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
                         
-                    }
-            
-            
-            SettingStack {
-                /// This is the main settings page.
-                SettingPage(title: "Settings") {
-      
-                    /// Use groups to group components together.
-                    SettingGroup(header: "Online Storage") {
-                        SettingToggle(title: "Save Data to Couchdb", isOn: $couchdb)
-                        if couchdb  {
-                            SettingTextField( placeholder: "Enter couchdb host", text: $host)
-                      
-                            SettingTextField( placeholder: "Enter User", text: $user)
-                            
-                            SettingTextField( placeholder: "Enter Password", text: $password)
-                        }
-                    }
                     
-                    SettingGroup {
-                                     
-                                        SettingPicker(
-                                            title: "Picker with menu",
-                                            choices: ["A", "B", "C", "D"],
-                                            selectedIndex: $index,
-                                            choicesConfiguration: .init(
-                                                pickerDisplayMode: .menu
-                                            )
-                                        )
-                                    }
+                    TextField("Password", text: $password)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        
                     
                     
-                   
-                    
-                    
-                    
-                    
-                    
-                    SettingGroup {
-                                               SettingButton(title: "View on GitHub") {
-                                                 
-                                                   
-                                                   
-                                               }
-
-                                               
-                                           }
-                    
-                    
-                    
+                  
                 }
                 
-                
+              
             }
             
             
-            
-            
-            
         }
-    }
+            }
+    
     
     
 }
