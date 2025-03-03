@@ -43,8 +43,6 @@ struct SettingView: View {
                     TextField("Password", text: $password)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         
-                    
-                    
                   
                 }
                 
