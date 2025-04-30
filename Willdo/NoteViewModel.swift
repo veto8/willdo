@@ -11,6 +11,7 @@ import SQLite3
 
 class NoteViewModel: ObservableObject {
     @Published var notes: [Note] = []
+    @Published var content: String = "aaa"
     var db : OpaquePointer?
     var path : String = "willdo8.sqlite"
     init(){
@@ -94,7 +95,7 @@ class NoteViewModel: ObservableObject {
          }
     
     
-    func getById(id:Int) {
+    func getById(id:Int) -> String {
         //var notes: [Note] = []
 
         
@@ -113,7 +114,7 @@ class NoteViewModel: ObservableObject {
               
                 }
             }
-            //return mainList
+            return "hello"
 
          
          }
@@ -166,15 +167,27 @@ class NoteViewModel: ObservableObject {
    func addNotes() {
        // notes = noteData
        for i in 1...2{
+           
+           
+           
            notes.append(Note(title: "foo\(i)", content:"bar\(i)"))
        }
        
        
     }
     
-    func tapNote(_ sender: UUID) {
+    func tapNote(_ content:String) {
         print("..tabNote touched")
-        print(sender)
+            // print(id)
+            // var x = getById(id: 1)
+        self.content = "hellox"
+        
+        
+        
+        
+        
+        
+        
         
     }
     
@@ -202,7 +215,7 @@ class NoteViewModel: ObservableObject {
             }
             notes.append(Note(title: title, content:content))
             print("...add note")
-            self.insertData(_id:title,_rev:"",doc:content)
+            self.insertData(_id:title, _rev:"", doc:content)
 
         }
         

@@ -12,6 +12,7 @@ struct NoteView: View {
     @ObservedObject var vm = NoteViewModel()
     @State private var title = ""
     @State private var content = ""
+    //@Binding var content2 : Int = 0
     @State private var isActive = false
     //@State private var username = ""
     //@State private var password = ""
@@ -84,9 +85,10 @@ struct NoteView: View {
                         Text(
                             note.title
                         ).onTapGesture{
-                            vm.tapNote(
-                                note.id
-                            )
+                            //vm.tapNote(
+                            //    note.content
+                            //)
+                            self.content = note.content
                         }
                         
                     }
@@ -100,6 +102,7 @@ struct NoteView: View {
                 //https://developer.apple.com/documentation/swiftui/texteditor
                 TextEditor(
                     text:$content
+                    //text: Binding(get: {vm.content }, set: {vm.content = $0})
                 )
                 //.textEditorStyle(RoundedBorderTextEditorStyle() )
                 .lineSpacing(
