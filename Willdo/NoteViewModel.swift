@@ -19,10 +19,7 @@ class NoteViewModel: ObservableObject {
         self.createTable()
        // self.insertData(_id:"idididididid",_rev:"revrev",doc:"dockdock")
         self.read()
-        
-        
-        
-        
+
         
         let defaults = UserDefaults.standard
         defaults.set("foo", forKey: "mykey")
@@ -132,9 +129,10 @@ class NoteViewModel: ObservableObject {
                }
            }
        }
-       
-       func delete(id : Int) {
-           let query = "DELETE FROM grade where id = \(id)"
+       */
+       func delete(_id : String) {
+           let query = "DELETE FROM willdo where _id ='\(_id)'"
+           //print(query)
            var statement : OpaquePointer? = nil
            if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
                if sqlite3_step(statement) == SQLITE_DONE {
@@ -146,7 +144,7 @@ class NoteViewModel: ObservableObject {
        }
      
      
-    */
+    
     
     func createTable()  {
             let query = "CREATE TABLE IF NOT EXISTS willdo(id INTEGER PRIMARY KEY AUTOINCREMENT, _id TEXT, _rev TEXT, doc TEXT);"
@@ -167,9 +165,6 @@ class NoteViewModel: ObservableObject {
    func addNotes() {
        // notes = noteData
        for i in 1...2{
-           
-           
-           
            notes.append(Note(title: "foo\(i)", content:"bar\(i)"))
        }
        
@@ -182,15 +177,17 @@ class NoteViewModel: ObservableObject {
             // var x = getById(id: 1)
         self.content = "hellox"
         
-        
-        
-        
-        
-        
-        
+  
         
     }
     
+    
+    func delete_item(at id: IndexSet) {
+        print(self.notes[id.first!].title)
+        self.delete(_id: self.notes[id.first!].title)
+        self.notes.remove(atOffsets: id)
+        //self.listItems.remove(atOffsets: indexSet)
+    }
     
     func add_note(_ title:String,_ content:String) {
         if content != "" {

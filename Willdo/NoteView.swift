@@ -80,7 +80,7 @@ struct NoteView: View {
                 //https://developer.apple.com/tutorials/develop-in-swift/create-dynamic-content
                 List {
                     ForEach(
-                        vm.notes.reversed()
+                        vm.notes
                     ) { note in
                         Text(
                             note.title
@@ -91,7 +91,7 @@ struct NoteView: View {
                             self.content = note.content
                         }
                         
-                    }
+                    }.onDelete(perform: vm.delete_item)
                 }
           
                 
@@ -178,6 +178,8 @@ struct NoteView: View {
             }
         }
     }
+    
+
 }
 
 #Preview {
