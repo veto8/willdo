@@ -12,4 +12,5 @@ struct Note: Identifiable {
     var id  = UUID()
     var title : String
     var content: String
+    var _date: String
 }

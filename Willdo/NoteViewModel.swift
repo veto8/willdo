@@ -28,7 +28,7 @@ class NoteViewModel: ObservableObject {
         
     }
     
-    func insertData(_id:String,_rev:String,doc:String) {
+    func insertData(_id:String,_rev:String,doc:String,_date:String) {
         let query = "INSERT INTO willdo (_id, _rev, doc) VALUES (?,?,?);"
         
         var statement : OpaquePointer? = nil
@@ -73,7 +73,7 @@ class NoteViewModel: ObservableObject {
         
         // var mainList = [DBGrade]()
         
-        let query = "SELECT _id, doc FROM willdo;"
+        let query = "SELECT _id, doc,_date  FROM willdo;"
         var statement : OpaquePointer? = nil
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
             while sqlite3_step(statement) == SQLITE_ROW {
@@ -81,7 +81,8 @@ class NoteViewModel: ObservableObject {
                 let _id = String(describing: String(cString: sqlite3_column_text(statement, 0)))
                 //  let _rev = String(describing: String(cString: sqlite3_column_text(statement, 1)))
                 let doc = String(describing: String(cString: sqlite3_column_text(statement, 1)))
-                notes.append(Note(title: _id, content: doc))
+                let _date = String(describing: String(cString: sqlite3_column_text(statement, 2)))
+                notes.append(Note(title: _id, content: doc,_date:_date ))
                 
                 
             }
@@ -98,7 +99,7 @@ class NoteViewModel: ObservableObject {
         
         // var mainList = [DBGrade]()
         
-        let query = "SELECT _id, doc FROM willdo;"
+        let query = "SELECT _id, doc, _date FROM willdo;"
         var statement : OpaquePointer? = nil
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
             while sqlite3_step(statement) == SQLITE_ROW {
@@ -106,7 +107,9 @@ class NoteViewModel: ObservableObject {
                 let _id = String(describing: String(cString: sqlite3_column_text(statement, 0)))
                 //  let _rev = String(describing: String(cString: sqlite3_column_text(statement, 1)))
                 let doc = String(describing: String(cString: sqlite3_column_text(statement, 1)))
-                notes.append(Note(title: _id, content: doc))
+                let _date = String(describing: String(cString: sqlite3_column_text(statement, 2)))
+               // let date = Integer(
+                notes.append(Note(title: _id, content: doc,_date:_date))
                 
                 
             }
@@ -147,7 +150,7 @@ class NoteViewModel: ObservableObject {
     
     
     func createTable()  {
-        let query = "CREATE TABLE IF NOT EXISTS willdo(id INTEGER PRIMARY KEY AUTOINCREMENT, _id TEXT, _rev TEXT, doc TEXT);"
+        let query = "CREATE TABLE IF NOT EXISTS willdo(id INTEGER PRIMARY KEY AUTOINCREMENT, _id TEXT, _rev TEXT, doc TEXT,date TEXT);"
         var statement : OpaquePointer? = nil
         
         if sqlite3_prepare_v2(self.db, query, -1, &statement, nil) == SQLITE_OK {
@@ -162,6 +165,7 @@ class NoteViewModel: ObservableObject {
         }
     }
     
+    /*
     func addNotes() {
         // notes = noteData
         for i in 1...2{
@@ -170,6 +174,8 @@ class NoteViewModel: ObservableObject {
         
         
     }
+    */
+    
     
     func tapNote(_ content:String) {
         print("..tabNote touched")
@@ -190,6 +196,7 @@ class NoteViewModel: ObservableObject {
     }
     
     func add_note(_ title:String,_ content:String) {
+        var _date = "1"
         if content != "" {
             var title = title
             if title == "" {
@@ -210,9 +217,9 @@ class NoteViewModel: ObservableObject {
                 
                 
             }
-            notes.append(Note(title: title, content:content))
+            notes.append(Note(title: title, content:content,_date:_date))
             print("...add note")
-            self.insertData(_id:title, _rev:"", doc:content)
+            self.insertData(_id:title, _rev:"", doc:content,_date:_date)
             
         }
         
@@ -223,9 +230,10 @@ class NoteViewModel: ObservableObject {
     
     
 }
+/*
 let noteData = [
     Note(title: "foo1", content:"bar1"),
     Note(title: "foo2", content:"bar2"),
     Note(title: "foo3", content:"bar3"),
 ]
-
+*/
