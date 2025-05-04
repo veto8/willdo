@@ -17,9 +17,9 @@ class NoteViewModel: ObservableObject {
     init(){
         self.db = createDB()
         self.createTable()
-       // self.insertData(_id:"idididididid",_rev:"revrev",doc:"dockdock")
+        // self.insertData(_id:"idididididid",_rev:"revrev",doc:"dockdock")
         self.read()
-
+        
         
         let defaults = UserDefaults.standard
         defaults.set("foo", forKey: "mykey")
@@ -34,150 +34,150 @@ class NoteViewModel: ObservableObject {
         var statement : OpaquePointer? = nil
         
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
-               
-                    sqlite3_bind_text(statement, 1, (_id as NSString).utf8String, -1, nil)
-                    sqlite3_bind_text(statement, 2, (_rev as NSString).utf8String, -1, nil)
-                    sqlite3_bind_text(statement, 3, (doc as NSString).utf8String, -1, nil)
-
-                    if sqlite3_step(statement) == SQLITE_DONE {
-                        print("Data inserted success")
-                    }else {
-                        print("Data is not inserted in table")
-                    }
-                } else {
-                  print("Query is not as per requirement")
-                }
+            
+            sqlite3_bind_text(statement, 1, (_id as NSString).utf8String, -1, nil)
+            sqlite3_bind_text(statement, 2, (_rev as NSString).utf8String, -1, nil)
+            sqlite3_bind_text(statement, 3, (doc as NSString).utf8String, -1, nil)
+            
+            if sqlite3_step(statement) == SQLITE_DONE {
+                print("Data inserted success")
+            }else {
+                print("Data is not inserted in table")
+            }
+        } else {
+            print("Query is not as per requirement")
+        }
         
     }
     //https://www.wepstech.com/sqlite-in-ios-with-swift-5/
     func createDB() -> OpaquePointer? {
-
-            let filePath = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathExtension(path)
-            
-            var db : OpaquePointer? = nil
-            
-            if sqlite3_open(filePath.path, &db) != SQLITE_OK {
-                print("There is error in creating DB")
-                return nil
-            }else {
-                print("Database has been created with path \(path)")
-                print(filePath.path)
-                return db
-            }
+        
+        let filePath = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathExtension(path)
+        
+        var db : OpaquePointer? = nil
+        
+        if sqlite3_open(filePath.path, &db) != SQLITE_OK {
+            print("There is error in creating DB")
+            return nil
+        }else {
+            print("Database has been created with path \(path)")
+            print(filePath.path)
+            return db
         }
+    }
     
     
     func read() {
         //var notes: [Note] = []
-
         
-           // var mainList = [DBGrade]()
-            
-            let query = "SELECT _id, doc FROM willdo;"
-            var statement : OpaquePointer? = nil
-            if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
-                while sqlite3_step(statement) == SQLITE_ROW {
-                    
-                    let _id = String(describing: String(cString: sqlite3_column_text(statement, 0)))
-                  //  let _rev = String(describing: String(cString: sqlite3_column_text(statement, 1)))
-                    let doc = String(describing: String(cString: sqlite3_column_text(statement, 1)))
-                    notes.append(Note(title: _id, content: doc))
         
-              
-                }
+        // var mainList = [DBGrade]()
+        
+        let query = "SELECT _id, doc FROM willdo;"
+        var statement : OpaquePointer? = nil
+        if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
+            while sqlite3_step(statement) == SQLITE_ROW {
+                
+                let _id = String(describing: String(cString: sqlite3_column_text(statement, 0)))
+                //  let _rev = String(describing: String(cString: sqlite3_column_text(statement, 1)))
+                let doc = String(describing: String(cString: sqlite3_column_text(statement, 1)))
+                notes.append(Note(title: _id, content: doc))
+                
+                
             }
-            //return mainList
-
-         
-         }
+        }
+        //return mainList
+        
+        
+    }
     
     
     func getById(id:Int) -> String {
         //var notes: [Note] = []
-
         
-           // var mainList = [DBGrade]()
-            
-            let query = "SELECT _id, doc FROM willdo;"
-            var statement : OpaquePointer? = nil
-            if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
-                while sqlite3_step(statement) == SQLITE_ROW {
-                    
-                    let _id = String(describing: String(cString: sqlite3_column_text(statement, 0)))
-                  //  let _rev = String(describing: String(cString: sqlite3_column_text(statement, 1)))
-                    let doc = String(describing: String(cString: sqlite3_column_text(statement, 1)))
-                    notes.append(Note(title: _id, content: doc))
         
-              
-                }
+        // var mainList = [DBGrade]()
+        
+        let query = "SELECT _id, doc FROM willdo;"
+        var statement : OpaquePointer? = nil
+        if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
+            while sqlite3_step(statement) == SQLITE_ROW {
+                
+                let _id = String(describing: String(cString: sqlite3_column_text(statement, 0)))
+                //  let _rev = String(describing: String(cString: sqlite3_column_text(statement, 1)))
+                let doc = String(describing: String(cString: sqlite3_column_text(statement, 1)))
+                notes.append(Note(title: _id, content: doc))
+                
+                
             }
-            return "hello"
-
-         
-         }
+        }
+        return "hello"
+        
+        
+    }
     /*
      func update(id : Int, name : String, result : String, avg : Int, list : [Grade]) {
-           let data = try! JSONEncoder().encode(list)
-           let listString = String(data: data, encoding: .utf8)
-           let query = "UPDATE grade SET name = '\(name)', result = '\(result)', avg = \(avg), list = '\(listString!)' WHERE id = \(id);"
-           var statement : OpaquePointer? = nil
-           if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
-               if sqlite3_step(statement) == SQLITE_DONE {
-                   print("Data updated success")
-               }else {
-                   print("Data is not updated in table")
-               }
-           }
-       }
-       */
-       func delete(_id : String) {
-           let query = "DELETE FROM willdo where _id ='\(_id)'"
-           //print(query)
-           var statement : OpaquePointer? = nil
-           if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
-               if sqlite3_step(statement) == SQLITE_DONE {
-                   print("Data delete success")
-               }else {
-                   print("Data is not deleted in table")
-               }
-           }
-       }
-     
-     
+     let data = try! JSONEncoder().encode(list)
+     let listString = String(data: data, encoding: .utf8)
+     let query = "UPDATE grade SET name = '\(name)', result = '\(result)', avg = \(avg), list = '\(listString!)' WHERE id = \(id);"
+     var statement : OpaquePointer? = nil
+     if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
+     if sqlite3_step(statement) == SQLITE_DONE {
+     print("Data updated success")
+     }else {
+     print("Data is not updated in table")
+     }
+     }
+     }
+     */
+    func delete(_id : String) {
+        let query = "DELETE FROM willdo where _id ='\(_id)'"
+        //print(query)
+        var statement : OpaquePointer? = nil
+        if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
+            if sqlite3_step(statement) == SQLITE_DONE {
+                print("Data delete success")
+            }else {
+                print("Data is not deleted in table")
+            }
+        }
+    }
+    
+    
     
     
     func createTable()  {
-            let query = "CREATE TABLE IF NOT EXISTS willdo(id INTEGER PRIMARY KEY AUTOINCREMENT, _id TEXT, _rev TEXT, doc TEXT);"
-            var statement : OpaquePointer? = nil
-            
-            if sqlite3_prepare_v2(self.db, query, -1, &statement, nil) == SQLITE_OK {
-                if sqlite3_step(statement) == SQLITE_DONE {
-                    print("Table creation success")
-                    
-                }else {
-                    print("Table creation fail")
-                }
-            } else {
-                print("Prepration fail")
+        let query = "CREATE TABLE IF NOT EXISTS willdo(id INTEGER PRIMARY KEY AUTOINCREMENT, _id TEXT, _rev TEXT, doc TEXT);"
+        var statement : OpaquePointer? = nil
+        
+        if sqlite3_prepare_v2(self.db, query, -1, &statement, nil) == SQLITE_OK {
+            if sqlite3_step(statement) == SQLITE_DONE {
+                print("Table creation success")
+                
+            }else {
+                print("Table creation fail")
             }
+        } else {
+            print("Prepration fail")
         }
+    }
     
-   func addNotes() {
-       // notes = noteData
-       for i in 1...2{
-           notes.append(Note(title: "foo\(i)", content:"bar\(i)"))
-       }
-       
-       
+    func addNotes() {
+        // notes = noteData
+        for i in 1...2{
+            notes.append(Note(title: "foo\(i)", content:"bar\(i)"))
+        }
+        
+        
     }
     
     func tapNote(_ content:String) {
         print("..tabNote touched")
-            // print(id)
-            // var x = getById(id: 1)
+        // print(id)
+        // var x = getById(id: 1)
         self.content = "hellox"
         
-  
+        
         
     }
     
@@ -201,7 +201,7 @@ class NoteViewModel: ObservableObject {
                     let indexTo = a[0].index(a[0].startIndex, offsetBy:25)
                     let substring = a[0][indexFrom..<indexTo]
                     title = String(substring) + "..."
-
+                    
                 }
                 else {
                     title = a[0]
@@ -213,7 +213,7 @@ class NoteViewModel: ObservableObject {
             notes.append(Note(title: title, content:content))
             print("...add note")
             self.insertData(_id:title, _rev:"", doc:content)
-
+            
         }
         
     }
@@ -221,11 +221,11 @@ class NoteViewModel: ObservableObject {
     
     
     
+    
 }
-
 let noteData = [
     Note(title: "foo1", content:"bar1"),
     Note(title: "foo2", content:"bar2"),
     Note(title: "foo3", content:"bar3"),
-        ]
+]
 
