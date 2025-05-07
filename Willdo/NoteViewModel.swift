@@ -28,7 +28,7 @@ class NoteViewModel: ObservableObject {
         
     }
     
-    func insertData(_id:String,_rev:String,doc:String,_date:String) {
+    func insertData(_id:String,_rev:String,doc:String) {
         let query = "INSERT INTO willdo (_id, _rev, doc) VALUES (?,?,?);"
         
         var statement : OpaquePointer? = nil
@@ -73,16 +73,15 @@ class NoteViewModel: ObservableObject {
         
         // var mainList = [DBGrade]()
         
-        let query = "SELECT _id, doc,_date  FROM willdo;"
+        let query = "SELECT _id,_rev doc FROM willdo;"
         var statement : OpaquePointer? = nil
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
             while sqlite3_step(statement) == SQLITE_ROW {
                 
                 let _id = String(describing: String(cString: sqlite3_column_text(statement, 0)))
-                //  let _rev = String(describing: String(cString: sqlite3_column_text(statement, 1)))
+                 let _rev = String(describing: String(cString: sqlite3_column_text(statement, 1)))
                 let doc = String(describing: String(cString: sqlite3_column_text(statement, 1)))
-                let _date = String(describing: String(cString: sqlite3_column_text(statement, 2)))
-                notes.append(Note(title: _id, content: doc,_date:_date ))
+                notes.append(Note(title: _id, content: doc ))
                 
                 
             }
@@ -109,7 +108,7 @@ class NoteViewModel: ObservableObject {
                 let doc = String(describing: String(cString: sqlite3_column_text(statement, 1)))
                 let _date = String(describing: String(cString: sqlite3_column_text(statement, 2)))
                // let date = Integer(
-                notes.append(Note(title: _id, content: doc,_date:_date))
+                notes.append(Note(title: _id, content: doc))
                 
                 
             }
@@ -150,7 +149,7 @@ class NoteViewModel: ObservableObject {
     
     
     func createTable()  {
-        let query = "CREATE TABLE IF NOT EXISTS willdo(id INTEGER PRIMARY KEY AUTOINCREMENT, _id TEXT, _rev TEXT, doc TEXT,date TEXT);"
+        let query = "CREATE TABLE IF NOT EXISTS willdo(id INTEGER PRIMARY KEY AUTOINCREMENT, _id TEXT, _rev TEXT, doc TEXT, _date TEXT);"
         var statement : OpaquePointer? = nil
         
         if sqlite3_prepare_v2(self.db, query, -1, &statement, nil) == SQLITE_OK {
@@ -217,9 +216,9 @@ class NoteViewModel: ObservableObject {
                 
                 
             }
-            notes.append(Note(title: title, content:content,_date:_date))
+            notes.append(Note(title: title, content:content))
             print("...add note")
-            self.insertData(_id:title, _rev:"", doc:content,_date:_date)
+            self.insertData(_id:title, _rev:"", doc:content)
             
         }
         
