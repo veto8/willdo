@@ -4,7 +4,6 @@
 //
 //  Created by veto on 29/1/2567 BE.
 //
-
 import Foundation
 import SwiftUI
 import SQLite3
@@ -27,6 +26,39 @@ class NoteViewModel: ObservableObject {
         print(foo!)
         
     }
+    //https://www.wepstech.com/sqlite-in-ios-with-swift-5/
+    func createDB() -> OpaquePointer? {
+        
+        let filePath = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathExtension(path)
+        
+        var db : OpaquePointer? = nil
+        
+        if sqlite3_open(filePath.path, &db) != SQLITE_OK {
+            print("There is error in creating DB")
+            return nil
+        }else {
+            print("Database has been created with path \(path)")
+            print(filePath.path)
+            return db
+        }
+    }
+    
+    func createTable()  {
+        let query = "CREATE TABLE IF NOT EXISTS willdo(id INTEGER PRIMARY KEY AUTOINCREMENT, _id TEXT, _rev TEXT, doc TEXT, _date TEXT);"
+        var statement : OpaquePointer? = nil
+        
+        if sqlite3_prepare_v2(self.db, query, -1, &statement, nil) == SQLITE_OK {
+            if sqlite3_step(statement) == SQLITE_DONE {
+                print("Table creation success")
+                
+            }else {
+                print("Table creation fail")
+            }
+        } else {
+            print("Prepration fail")
+        }
+    }
+    
     
     func insertData(_id:String,_rev:String,doc:String) {
         let query = "INSERT INTO willdo (_id, _rev, doc) VALUES (?,?,?);"
@@ -49,49 +81,22 @@ class NoteViewModel: ObservableObject {
         }
         
     }
-    //https://www.wepstech.com/sqlite-in-ios-with-swift-5/
-    func createDB() -> OpaquePointer? {
-        
-        let filePath = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathExtension(path)
-        
-        var db : OpaquePointer? = nil
-        
-        if sqlite3_open(filePath.path, &db) != SQLITE_OK {
-            print("There is error in creating DB")
-            return nil
-        }else {
-            print("Database has been created with path \(path)")
-            print(filePath.path)
-            return db
-        }
-    }
-    
-    
+
     func read() {
-        //var notes: [Note] = []
-        
-        
-        // var mainList = [DBGrade]()
-        
-        let query = "SELECT _id,_rev doc FROM willdo;"
+        let query = "SELECT _id,_rev, doc FROM willdo;"
         var statement : OpaquePointer? = nil
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
             while sqlite3_step(statement) == SQLITE_ROW {
                 
                 let _id = String(describing: String(cString: sqlite3_column_text(statement, 0)))
-                 let _rev = String(describing: String(cString: sqlite3_column_text(statement, 1)))
-                let doc = String(describing: String(cString: sqlite3_column_text(statement, 1)))
+                let _rev = String(describing: String(cString: sqlite3_column_text(statement, 1)))
+                let doc = String(describing: String(cString: sqlite3_column_text(statement, 2)))
                 notes.append(Note(title: _id, content: doc ))
-                
-                
             }
         }
-        //return mainList
-        
-        
     }
     
-    
+    /*
     func getById(id:Int) -> String {
         //var notes: [Note] = []
         
@@ -117,6 +122,7 @@ class NoteViewModel: ObservableObject {
         
         
     }
+     */
     /*
      func update(id : Int, name : String, result : String, avg : Int, list : [Grade]) {
      let data = try! JSONEncoder().encode(list)
@@ -145,54 +151,8 @@ class NoteViewModel: ObservableObject {
         }
     }
     
-    
-    
-    
-    func createTable()  {
-        let query = "CREATE TABLE IF NOT EXISTS willdo(id INTEGER PRIMARY KEY AUTOINCREMENT, _id TEXT, _rev TEXT, doc TEXT, _date TEXT);"
-        var statement : OpaquePointer? = nil
-        
-        if sqlite3_prepare_v2(self.db, query, -1, &statement, nil) == SQLITE_OK {
-            if sqlite3_step(statement) == SQLITE_DONE {
-                print("Table creation success")
-                
-            }else {
-                print("Table creation fail")
-            }
-        } else {
-            print("Prepration fail")
-        }
-    }
-    
-    /*
-    func addNotes() {
-        // notes = noteData
-        for i in 1...2{
-            notes.append(Note(title: "foo\(i)", content:"bar\(i)"))
-        }
-        
-        
-    }
-    */
-    
-    
-    func tapNote(_ content:String) {
-        print("..tabNote touched")
-        // print(id)
-        // var x = getById(id: 1)
-        self.content = "hellox"
-        
-        
-        
-    }
-    
-    
-    func delete_item(at id: IndexSet) {
-        print(self.notes[id.first!].title)
-        self.delete(_id: self.notes[id.first!].title)
-        self.notes.remove(atOffsets: id)
-        //self.listItems.remove(atOffsets: indexSet)
-    }
+
+
     
     func add_note(_ title:String,_ content:String) {
         var _date = "1"
@@ -224,15 +184,14 @@ class NoteViewModel: ObservableObject {
         
     }
     
-    
+    func delete_item(at id: IndexSet) {
+        print(self.notes[id.first!].title)
+        self.delete(_id: self.notes[id.first!].title)
+        self.notes.remove(atOffsets: id)
+        //self.listItems.remove(atOffsets: indexSet)
+    }
     
     
     
 }
-/*
-let noteData = [
-    Note(title: "foo1", content:"bar1"),
-    Note(title: "foo2", content:"bar2"),
-    Note(title: "foo3", content:"bar3"),
-]
-*/
+
