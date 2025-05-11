@@ -60,7 +60,7 @@ class NoteViewModel: ObservableObject {
     }
     
     
-    func insertData(_id:String,_rev:String,doc:String) {
+    func insert_data(_id:String,_rev:String,doc:String) {
         let query = "INSERT INTO willdo (_id, _rev, doc) VALUES (?,?,?);"
         
         var statement : OpaquePointer? = nil
@@ -187,9 +187,13 @@ class NoteViewModel: ObservableObject {
                 
                 
             }
-            notes.append(Note(title: title, content:content))
             print("...add note")
-            self.insertData(_id:title, _rev:"", doc:content)
+            let _note: Note = Note(title: title, content:content)
+            notes.append(_note)
+            
+            let doc:String =  self.s2j(_note)
+            print(doc)
+            self.insert_data(_id:title, _rev:"", doc:content)
             
         }
         
@@ -202,7 +206,7 @@ class NoteViewModel: ObservableObject {
         //self.listItems.remove(atOffsets: indexSet)
     }
     
-    func struc2json(_ note:Note)->String {
+    func s2j(_ note:Note)->String {
         var json_string = "";
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
@@ -217,8 +221,24 @@ class NoteViewModel: ObservableObject {
         }
         
         return json_string;
+    }
+    
+    func j2s(_doc:String)->Note {
+        let doc = Data(_doc.utf8)
+        let note: Note = Note(title: "xxxx", content:"xxxxx")
+
+        do {
+         //  let note = try JSONDecoder().decode( Note, from: doc)
+            // Access the properties of `user`
+            
+        } catch {
+            print("Error decoding JSON: \(error)")
         }
+        
+        return note;
+        
+    }
     
-    
+  
 }
 
