@@ -44,7 +44,7 @@ class NoteViewModel: ObservableObject {
     }
     
     func createTable()  {
-        let query = "CREATE TABLE IF NOT EXISTS willdo(id INTEGER PRIMARY KEY AUTOINCREMENT, _id TEXT, _rev TEXT, doc TEXT, _date TEXT);"
+        let query = "CREATE TABLE IF NOT EXISTS willdo(id INTEGER PRIMARY KEY AUTOINCREMENT, _id TEXT, _rev TEXT, doc TEXT);"
         var statement : OpaquePointer? = nil
         
         if sqlite3_prepare_v2(self.db, query, -1, &statement, nil) == SQLITE_OK {
@@ -87,10 +87,21 @@ class NoteViewModel: ObservableObject {
         var statement : OpaquePointer? = nil
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
             while sqlite3_step(statement) == SQLITE_ROW {
+            
+                var _id = "";
+                if (sqlite3_column_type(statement, 2) != SQLITE_NULL) {
+                     _id = String(describing: String(cString: sqlite3_column_text(statement, 0)))
+
+                }
+              var _rev = "";
+                if (sqlite3_column_type(statement, 2) != SQLITE_NULL) {
+                     _rev = String(describing: String(cString: sqlite3_column_text(statement, 1)))
+                }
+              var doc = "";
+              if (sqlite3_column_type(statement, 2) != SQLITE_NULL) {
+                doc = String(describing: String(cString: sqlite3_column_text(statement, 2)))
+              }
                 
-                let _id = String(describing: String(cString: sqlite3_column_text(statement, 0)))
-                let _rev = String(describing: String(cString: sqlite3_column_text(statement, 1)))
-                let doc = String(describing: String(cString: sqlite3_column_text(statement, 2)))
                 notes.append(Note(title: _id, content: doc ))
             }
         }
@@ -155,7 +166,7 @@ class NoteViewModel: ObservableObject {
 
     
     func add_note(_ title:String,_ content:String) {
-        var _date = "1"
+      //  var _date = "1"
         if content != "" {
             var title = title
             if title == "" {
@@ -191,6 +202,22 @@ class NoteViewModel: ObservableObject {
         //self.listItems.remove(atOffsets: indexSet)
     }
     
+    func struc2json(_ note:Note)->String {
+        var json_string = "";
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+
+        do {
+            let jsonData = try encoder.encode(note)
+             let jsonString = String(data: jsonData, encoding: .utf8)
+            //json_string = jsonString;
+            print(jsonString ?? "")
+        } catch {
+            print("Error encoding struct to JSON: \(error.localizedDescription)")
+        }
+        
+        return json_string;
+        }
     
     
 }
