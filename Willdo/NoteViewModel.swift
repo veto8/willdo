@@ -23,7 +23,7 @@ class NoteViewModel: ObservableObject {
         let defaults = UserDefaults.standard
         defaults.set("foo", forKey: "mykey")
         let foo = defaults.string(forKey: "mykey")
-        print(foo!)
+        //print(foo!)
         
     }
     //https://www.wepstech.com/sqlite-in-ios-with-swift-5/
@@ -38,7 +38,7 @@ class NoteViewModel: ObservableObject {
             return nil
         }else {
             print("Database has been created with path \(path)")
-            print(filePath.path)
+           // print(filePath.path)
             return db
         }
     }
@@ -194,8 +194,8 @@ class NoteViewModel: ObservableObject {
             let doc:String =  self.s2j(_note)
             print(doc)
             
-            let sdoc:Note =  self.j2s(doc)
-            //print(sdoc)
+            let sdoc:Note =  self.j2s(doc:doc)
+            print(sdoc)
             
             self.insert_data(_id:title, _rev:"", doc:content)
             
@@ -204,51 +204,38 @@ class NoteViewModel: ObservableObject {
     }
     
     func delete_item(at id: IndexSet) {
-        print(self.notes[id.first!].title)
+        //print(self.notes[id.first!].title)
         self.delete(_id: self.notes[id.first!].title)
         self.notes.remove(atOffsets: id)
         //self.listItems.remove(atOffsets: indexSet)
     }
     
     func s2j(_ note:Note)->String {
-        var json_string = "";
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-
+        var json_string = ""
         do {
-            let jsonData = try encoder.encode(note)
-             let jsonString = String(data: jsonData, encoding: .utf8)
-            //json_string = jsonString;
-            print(jsonString ?? "")
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+            let json_data = try encoder.encode(note)
+            json_string = String(data: json_data, encoding: .utf8) ?? ""
         } catch {
-            print("Error encoding struct to JSON: \(error.localizedDescription)")
+            print("...error encoding")
         }
-        
-        return json_string;
+            return json_string
     }
     
-    func j2s(_ _doc:String)->Note {
-    
-       // let string = "[{\"form_id\":3465,\"canonical_name\":\"df_SAWERQ\",\"form_name\":\"Activity 4 with Images\",\"form_desc\":null}]"
-        //let data = string.data(using: .utf8)!
-       
-       // let data = _doc.data(using: .utf8)!
+    func j2s(doc:String)->Note {
+
         var note: Note = Note(title: "failed", content:"failed")
-        print(_doc)
-        print("xxxxxxxxxxxxxxx")
-        print(data)
-        print("xxxxxxxxxxxxxx")
-        
+        let _data =  doc.data(using: .utf8)!
+
         do {
-            //note = try JSONDecoder().decode( Note.self, from: data)
-            
-            // Access the properties of `user`
-            
+            let decoder = JSONDecoder()
+            note = try decoder.decode(Note.self,from: _data)
+  
         } catch {
-            print("Error decoding JSON: \(error)")
+            print("...error decoding")
         }
         
-        //print(note)
         return note;
         
     }
