@@ -193,6 +193,10 @@ class NoteViewModel: ObservableObject {
             
             let doc:String =  self.s2j(_note)
             print(doc)
+            
+            let sdoc:Note =  self.j2s(doc)
+            //print(sdoc)
+            
             self.insert_data(_id:title, _rev:"", doc:content)
             
         }
@@ -223,18 +227,28 @@ class NoteViewModel: ObservableObject {
         return json_string;
     }
     
-    func j2s(_doc:String)->Note {
-        let doc = Data(_doc.utf8)
-        let note: Note = Note(title: "xxxx", content:"xxxxx")
-
+    func j2s(_ _doc:String)->Note {
+    
+       // let string = "[{\"form_id\":3465,\"canonical_name\":\"df_SAWERQ\",\"form_name\":\"Activity 4 with Images\",\"form_desc\":null}]"
+        //let data = string.data(using: .utf8)!
+       
+       // let data = _doc.data(using: .utf8)!
+        var note: Note = Note(title: "failed", content:"failed")
+        print(_doc)
+        print("xxxxxxxxxxxxxxx")
+        print(data)
+        print("xxxxxxxxxxxxxx")
+        
         do {
-         //  let note = try JSONDecoder().decode( Note, from: doc)
+            //note = try JSONDecoder().decode( Note.self, from: data)
+            
             // Access the properties of `user`
             
         } catch {
             print("Error decoding JSON: \(error)")
         }
         
+        //print(note)
         return note;
         
     }
